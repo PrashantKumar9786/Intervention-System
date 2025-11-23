@@ -14,7 +14,7 @@ import axios from "axios";
 import io from "socket.io-client";
 
 // ⚙️ CONFIGURATION
-const API_URL = "http://localhost:5000"; // Change for production: 'https://your-backend.onrender.com'
+const API_URL = "https://alcovia-intervention-system.onrender.com"; // Change for production: 'https://your-backend.onrender.com'
 const STUDENT_ID = "STU001";
 
 export default function App() {
