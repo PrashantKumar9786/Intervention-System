@@ -19,10 +19,7 @@ const io = socketIo(server, {
 // Database Connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: { rejectUnauthorized: false }, // enable TLS, ignore cert validation
 });
 
 // Test DB Connection (log full error if any)
