@@ -1,3 +1,4 @@
+// index.js (DEBUG VERSION - paste/replace your existing file temporarily)
 const express = require("express");
 const { Pool } = require("pg");
 const cors = require("cors");
@@ -24,7 +25,7 @@ const pool = new Pool({
       : false,
 });
 
-// Test DB Connection
+// Test DB Connection (log full error if any)
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {
     console.error("❌ Database connection failed:", err);
@@ -36,6 +37,14 @@ pool.query("SELECT NOW()", (err, res) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Global error handlers (helps capture background issues)
+process.on("unhandledRejection", (reason, p) => {
+  console.error("Unhandled Rejection at Promise", p, "reason:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception thrown:", err);
+});
 
 // Store active WebSocket connections
 const activeConnections = new Map();
@@ -82,8 +91,9 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Get Student Status
+// Get Student Status (DEBUGGED - returns details on error)
 app.get("/api/student/:studentId", async (req, res) => {
+  console.log("📥 GET /api/student called with:", req.params.studentId);
   try {
     const { studentId } = req.params;
 
@@ -93,28 +103,33 @@ app.get("/api/student/:studentId", async (req, res) => {
     );
 
     if (studentResult.rows.length === 0) {
+      console.warn(`⚠️ Student ${studentId} not found`);
       return res.status(404).json({ error: "Student not found" });
     }
 
     const student = studentResult.rows[0];
 
-    // Get active intervention
     const interventionResult = await pool.query(
       "SELECT * FROM interventions WHERE student_id = $1 AND completed = false ORDER BY assigned_at DESC LIMIT 1",
       [studentId]
     );
 
-    res.json({
-      student: student,
+    return res.json({
+      student,
       intervention: interventionResult.rows[0] || null,
     });
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("❌ ERROR in /api/student/:studentId →", error);
+    // TEMP: return error details for debugging. Remove before production.
+    return res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+      stack: error.stack,
+    });
   }
 });
 
-// Daily Check-in Endpoint (MAIN LOGIC)
+// Daily Check-in Endpoint (MAIN LOGIC) (unchanged)
 app.post("/api/daily-checkin", async (req, res) => {
   const client = await pool.connect();
 
@@ -212,7 +227,8 @@ app.post("/api/daily-checkin", async (req, res) => {
       const webhookUrl = process.env.N8N_WEBHOOK_URL;
       if (
         webhookUrl &&
-        webhookUrl !== "https://temp-url-will-update-later.com"
+        webhookUrl !==
+          "https://your-instance.app.n8n.cloud/webhook/student-intervention"
       ) {
         console.log("📞 Calling n8n webhook...");
         axios
