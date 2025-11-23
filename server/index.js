@@ -225,7 +225,7 @@ app.post("/api/daily-checkin", async (req, res) => {
       if (
         webhookUrl &&
         webhookUrl !==
-          "https://your-instance.app.n8n.cloud/webhook/student-intervention"
+          "https://prashant97.app.n8n.cloud/webhook-test/student-intervention"
       ) {
         console.log("📞 Calling n8n webhook...");
         axios
