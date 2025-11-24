@@ -1,6 +1,6 @@
-# 🚀 Alcovia Intervention System
+# 🚀 Intervention Engine
 
-The Alcovia Intervention System is a comprehensive solution designed to monitor and improve student engagement and performance through real-time interventions. This full-stack application combines a React Native mobile client with a robust Express.js backend, powered by PostgreSQL for data persistence and Socket.IO for real-time updates.
+The Intervention System is a comprehensive solution designed to monitor and improve student engagement and performance through real-time interventions. This full-stack application combines a React Native mobile client with a robust Express.js backend, powered by PostgreSQL for data persistence and Socket.IO for real-time updates.
 
 ## 🌟 Key Features
 
