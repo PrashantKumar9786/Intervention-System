@@ -96,6 +96,27 @@ The Alcovia Intervention System is a comprehensive solution designed to monitor 
 - `npm start` - Start production server
 - `npm run dev` - Start development server with hot-reload
 
+## 🛡️ Fail-Safe Mechanism
+
+To ensure system reliability and prevent intervention lockouts, we've implemented a multi-layered fail-safe mechanism:
+
+1. **Automatic Timeout Release**
+   - All intervention locks automatically expire after 2 hours of inactivity
+   - System periodically checks and clears stale locks during maintenance windows
+
+2. **Escalation Path**
+   - If an intervention remains unresolved for 4+ hours, it's automatically escalated to the Head Mentor
+   - Escalated interventions trigger SMS/email notifications to the Head Mentor
+   - System maintains an audit log of all escalations for review
+
+3. **Manual Override**
+   - Authorized administrators can manually release interventions via the admin dashboard
+   - All manual overrides require 2FA and are logged for security
+
+4. **Health Monitoring**
+   - System continuously monitors intervention status and lock states
+   - Automated alerts for any intervention exceeding expected duration thresholds
+
 ## ⚙️ Environment Variables
 
 The server uses `dotenv` for environment configuration. Here are the available environment variables:
