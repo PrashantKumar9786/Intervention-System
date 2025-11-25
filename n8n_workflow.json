@@ -1,0 +1,147 @@
+{
+  "name": "Intervention",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "student-intervention",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        96,
+        80
+      ],
+      "id": "ea0d3276-b69e-430c-9bdc-153382462bb2",
+      "name": "Webhook",
+      "webhookId": "343692e3-1de1-40b3-90ad-0780f46f43c7"
+    },
+    {
+      "parameters": {
+        "sendTo": "prashant979385@gmail.com",
+        "subject": "🚨 Student Intervention Required",
+        "message": "=<h2>🚨 Student Intervention Required</h2>\n\n<h3>Student Details</h3>\n<p><strong>Name:</strong> {{$json.student_name}}</p>\n<p><strong>Student ID:</strong> {{$json.student_id}}</p>\n<p><strong>Email:</strong> {{$json.student_email}}</p>\n\n<h3>Performance Alert</h3>\n<p><strong>Quiz Score:</strong> {{$json.quiz_score}}/10</p>\n<p><strong>Focus Time:</strong> {{$json.focus_minutes}} minutes</p>\n\n<p><strong>Action Required:</strong> Review the student and assign a remedial task.</p>\n\n<p>\n  <a href=\"{{$execution.resumeUrl}}\"\n     style=\"background-color: #6366f1;\n            color: white;\n            padding: 15px 30px;\n            text-decoration: none;\n            border-radius: 8px;\n            display: inline-block;\">\n      📝 Assign Remedial Task\n  </a>\n</p>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        80
+      ],
+      "id": "04acbd04-38ff-475b-a92e-c7afeb0da6ca",
+      "name": "Send a message",
+      "webhookId": "2392418d-8672-4f1d-a4ac-124a0bbf4cfe",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "PNvaRmPT8QjnPvnF",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        80
+      ],
+      "id": "6102dc00-eb99-4e7c-bbce-496ad6992352",
+      "name": "Wait",
+      "webhookId": "49eef381-d95e-414d-8a2c-92f48505b8d1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://alcovia-intervention-system-6.onrender.com/api/assign-intervention",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"student_id\": \"STU001\",\n  \"intervention_id\": 123,\n  \"assigned_task\": \"Read Chapter 4\",\n  \"assigned_by\": \"Prashant Kumar\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        768,
+        80
+      ],
+      "id": "aaee370d-b63a-40a5-8946-9f8b05a23424",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "student_id": "STU001",
+          "student_name": "Prashant Kushwah",
+          "student_email": "prashantkushwah913@gmail.com",
+          "quiz_score": 5,
+          "focus_minutes": 30,
+          "intervention_id": 999,
+          "callback_url": "http://localhost:5000/api/assign-intervention"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f65cd942-926a-40d3-bc09-9aace24e813e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1bfdce6c52efe27922792693720f04b1daddb3c7a89122abaaeb7f905ca4cfa"
+  },
+  "id": "OuQ1yxxXSgUuSKUc",
+  "tags": []
+}
